@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Alpine JS</title>
+    <script src="https://unpkg.com/alpinejs" defer></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      [x-cloak] {
+        display: none !important;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container mx-auto mt-6 max-w-sm text-center m-10">
+      <h1 class="text-5xl mb-4">Alpine JS</h1>
+      <!-- Use of x-data and x-cloak to hide the element -->
+      <div
+        class="flex flex-col gap-4"
+        x-data="{
+        open:false, 
+        text: 'rx-78-2',
+        search: '',
+        posts: [
+        {
+          id: 1,
+          title: 'Post 1',
+          body: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptatibus, quia?'
+        },
+        {
+          id: 2,
+          title: 'Post 2',
+          body: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptatibus, quia?'
+        },
+        {
+          id: 3,
+          title: 'Post 3',
+          body: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptatibus, quia?'
+        }
+        ]
+        }"
+        x-cloak
+      >
+        <!-- use of x-on:click to toggle the value of open and x:bind-->
+        <button
+          x-on:click="open = !open"
+          x-bind:class="open ? 'bg-slate-700 text-white' : 'bg-slate-200 text-slate-800'"
+          class="bg-slate-700 text-white px-4 py-2 rounded-xl shadow-md"
+        >
+          Toggle
+        </button>
+        <!-- x-show to show the element -->
+        <div x-show="open" x-transition x-cloak>
+          <p class="bg-gray-200 text-gray-800 rounded p-4 my-4 shadow-md">
+            Lorem, ipsum dolor sit amet consectetur adipisicing elit. Suscipit
+            fuga, facilis, minus, aperiam error nam similique placeat omnis
+            mollitia magni delectus sunt accusantium reprehenderit excepturi
+            minima officia vel possimus quidem.2
+          </p>
+        </div>
+
+        <div class="my-4">
+          This Gundam model is:
+          <!-- Use of x-text to show the text -->
+          <span x-text="text" class="text-blue-500"></span>
+        </div>
+
+        <!-- x-effect -->
+        <div x-effect="console.log(open)"></div>
+
+        <!-- x-model -->
+        <input
+          x-model="search"
+          class="border-2 border-gray-200 rounded p-2 my-4"
+          placeholder="Type something"
+        />
+        <!-- print the value of search -->
+        <p>Searching for...</p>
+        <p x-text="search" class="text-blue-500"></p>
+
+        <!-- x-if -->
+        <template x-if="search==='rx-78-2'">
+          <div>
+            Correct! this is the search value we were looing for:
+            <span x-text="search"></span>
+          </div>
+        </template>
+
+        <!-- x-for -->
+        <template x-for="post in posts" :key="post.id">
+          <div class="my-4 border-2 p-4 rounded shadow-md">
+            <h2 x-text="post.title"></h2>
+            <p x-text="post.body"></p>
+          </div>
+        </template>
+
+        <!-- x-ref -->
+        <div
+          x-bind:class="search != '' ? 'bg-slate-200 text-slate-800 rounded p-4 my-4 shadow-md font-bold': ''"
+          x-ref="myDiv"
+        >
+        </div>
+        <button
+            @click="$refs.myDiv.innerText = search"
+            class="bg-slate-700 text-white px-4 py-2 rounded-xl shadow-md"
+          >
+            Put serach text above this button
+        </button>
+
+
+        <!-- x-html -->
+        <div x-html="fetch('partial.html').then(r => r.text())"
+          @click="$el.innerText = 'Changed text usign $el'"
+        ></div>
+
+        <!-- x-init y $watch -->
+        <div x-init="$watch('search', value => console.log(value))"></div>
+
+
+
+        <!-- $dispatch for firing events -->
+        <div @notify="alert('You have been notified!')">
+          <button
+          @click="$dispatch('notify')"
+          class="bg-slate-700 text-white px-4 py-2 rounded-xl shadow-md"
+        >
+          Disparch alert
+        </button>
+   </div>
+
+
+                <!-- $data - Gives access to current Alpine data scope -->
+        <button
+          @click="getLatestPost($data.posts)"
+          class="bg-orange-800 text-white mt-6 p-2 rounded-lg"
+        >
+          Get Latest Post
+        </button>
+
+
+        </div>
+      </div>
+
+    </div>
+
+
+    <footer x-data class="text-center mt-10">
+      <p>Copyright &copy; <span x-text="new Date().getFullYear()"></span></p>
+
+    </footer>
+
+    <script>
+    function getLatestPost(posts) {
+      console.log(posts.slice(-1).pop());
+    }
+
+// document.addEventListener("alpine:init", () => {
+//   Alpine.store("darkMode", {
+//     on: false,
+//
+//     toggle() {
+//       this.on = !this.on;
+//     }
+//   });
+//
+    </script>
+  </body>
+</html>
